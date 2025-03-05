@@ -1,15 +1,14 @@
-#include "character_loader.h"
+#include "entity_loader.h"
 
-
-// Function to load characters from CSV file
-std::vector<Character> loadCharacters(const std::string& filename, const std::unordered_map<std::string, Weapon>& weapons) {
+// Function to load entities from CSV file
+std::vector<Entity*> loadEntities(const std::string& filename, const std::unordered_map<std::string, Weapon>& weapons) {
     std::ifstream file(filename);
     std::string line;
-    std::vector<Character> characters;
+    std::vector<Entity*> entities;
     
     if (!file) {
         std::cerr << "Error opening file: " << filename << std::endl;
-        return characters;
+        return entities;
     }
 
     std::getline(file, line); // Skip header line
@@ -27,34 +26,44 @@ std::vector<Character> loadCharacters(const std::string& filename, const std::un
         std::getline(ss, defMaxStr, ',');
         std::getline(ss, weaponName, ',');
 
-        Character character;
-        character.name = name;
-        character.type = type;
-        character.health = std::stoi(healthStr);
-        character.strength = std::stoi(strStr);
-        character.strengthMax = std::stoi(strMaxStr);
-        character.defense = std::stoi(defStr);
-        character.defenseMax = std::stoi(defMaxStr);
+        int health = std::stoi(healthStr);
+        int strength = std::stoi(strStr);
+        int strengthMax = std::stoi(strMaxStr);
+        int defense = std::stoi(defStr);
+        int defenseMax = std::stoi(defMaxStr);
 
-        if (weapons.find(weaponName) != weapons.end()) {
-            character.weapon = weapons.at(weaponName);
+        Weapon weapon;
+        // Convert weaponName to lowercase before searching in the map
+        std::string lowerWeaponName = toLowerCase(weaponName);
+
+        if (weapons.find(lowerWeaponName) != weapons.end()) {
+            weapon = weapons.at(lowerWeaponName);
         } else {
-            std::cerr << "Warning: Weapon not found for character " << name << ": " << weaponName << std::endl;
+            std::cerr << "Warning: Weapon not found for entity " << name << ": " << weaponName << std::endl;
         }
 
-        characters.push_back(character);
+        // Create specific entity types based on 'type'
+        Entity* entity = nullptr;
+        if (type == "Character") {
+            entity = new Character(name, health, strength, strengthMax, defense, defenseMax, weapon);
+        } else if (type == "Enemy") {
+            entity = new Enemy(name, health, strength, strengthMax, defense, defenseMax, weapon);
+        } else if (type == "Mob") {
+            entity = new Mob(name, health, strength, strengthMax, defense, defenseMax, weapon);
+        }
+        
+
+        if (entity) {
+            entities.push_back(entity);
+        }
     }
 
-    return characters;
+    return entities;
 }
 
-// Function to print character details
-void printCharacter(const Character& character) {
-    std::cout << "Name: " << character.name << " (" << character.type << ")\n";
-    std::cout << "Health: " << character.health << "\n";
-    std::cout << "Strength: " << character.strength << "/" << character.strengthMax << "\n";
-    std::cout << "Defense: " << character.defense << "/" << character.defenseMax << "\n";
-    std::cout << "Weapon: " << character.weapon.name << " (Damage: " << character.weapon.damage
-              << ", Magic: " << character.weapon.magic << ")\n";
-    std::cout << "-------------------------\n";
+// Function to print entity details
+void printEntity(const Entity* entity) {
+    if (entity) {
+        entity->print();
+    }
 }

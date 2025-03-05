@@ -1,0 +1,3 @@
+Name,Type,Health,Strength,StrengthMax,Defense,DefenseMax,Weapon
+Slime,Mob,10,2,5,1,3,Goo
+Bat,Mob,15,3,6,1,4,Claws

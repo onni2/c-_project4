@@ -3,3 +3,7 @@ sword,10,null
 fire sword,10,fire
 axe,15,null
 magic staff,5,arcane
+staff,3,arcane
+spear,12,null
+goo,1,poison
+claws,7,null

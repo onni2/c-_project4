@@ -7,6 +7,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <string>
+#include <cctype>
 
 // Structure to store weapon data
 struct Weapon {
@@ -15,5 +16,5 @@ struct Weapon {
     std::string magic;
 };
 std::unordered_map<std::string, Weapon> loadWeapons(const std::string& filename);
-
+std::string toLowerCase(const std::string& str);
 #endif
