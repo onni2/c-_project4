@@ -1,6 +1,6 @@
-#include "entity_loader.h"
-#include "weapon_loader.h"
-#include "battle.h"
+#include "entity/entity_loader.h"
+#include "weapons/weapon_loader.h"
+#include "battle/battle.h"
 
 // Function to select a character interactively
 Entity* selectCharacter(const std::vector<Entity*>& characters) {
@@ -14,6 +14,7 @@ Entity* selectCharacter(const std::vector<Entity*>& characters) {
     }
     return characters[choice - 1];  // Access character with the selected choice
 }
+
 
 Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availableWeapons) {
     std::string name;
@@ -64,12 +65,29 @@ Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availa
     return new Character(name, health, strength, strengthMax, defense, defenseMax, selectedWeapon);
 }
 
+void displayCharacters(const std::vector<Entity*>& allEntities) {
+    std::cout << "############################################\n"
+              << "               Available Characters         \n"
+              << "############################################";
 
+    int index = 1;
+    for (Entity* entity : allEntities) {
+        // Check if the entity is of type Character
+        if (entity->getType() == "Character") {
+            std::cout << "\n[" << index++ << "] ";
+            entity->print();  // Calls the print() function for the Character
+        }
+    }
+
+    std::cout << "\n############################################\n"
+              << "             Select a character (1-" << index - 1 << "): \n"
+              << "############################################\n";
+}
 
 int main() {
-
     srand(time(nullptr));
-
+    // Prompt user to open the game in a new terminal
+    
     std::string weaponFile = "csv/weapons.csv";
     std::string characterFile = "csv/characters.csv";
     std::string enemyFile = "csv/enemies.csv";
@@ -124,10 +142,7 @@ int main() {
     //    printEntity(entity);  // Print details of each entity
     //    delete entity;  // Free memory for each entity after printing
     //}
-    std::cout << "\nAvailable Characters:\n";
-    for (Entity* entity : characters) {  
-        printEntity(entity);
-    }
+    displayCharacters(allEntities);
 
     // Select character
     Entity* player = selectCharacter(characters);
@@ -137,14 +152,26 @@ int main() {
     }
     do {
         Entity* mob = pickRandomMob(mobs);
+        
+        if (mob == nullptr) { // Check if all mobs are dead
+            std::cout << "Congratulations! You have defeated all enemies! You win!\n";
+            break;
+        }
+    
         printFightStats(player, mob);
         fight(player, mob);
-
+    
+        if (player->getHealth() <= 0) { // Check if the player is dead
+            std::cout << "You have been defeated! Game over.\n";
+            break;
+        }
+    
         std::cout << "\nDo you want to continue or go home? (c for continue, h for home): ";
         std::cin >> choice;
         std::cin.ignore();
+    
     } while (choice == 'c' || choice == 'C');
-
+    
     std::cout << "Thanks for playing!\n";
     return 0;
 }

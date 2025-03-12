@@ -2,22 +2,28 @@
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -g
 
-# Source files
-SRC = main.cpp weapon_loader.cpp character_loader.cpp battle.cpp
+# Source files for the game and launcher
+GAME_SRC = game.cpp weapons/weapon_loader.cpp entity/character_loader.cpp battle/battle.cpp
+LAUNCHER_SRC = launcher.cpp
 
-# Output executable
-TARGET = my_program
+# Output executables
+GAME_TARGET = game.exe
+LAUNCHER_TARGET = launcher.exe
 
 # Default target
-all: $(TARGET)
+all: $(GAME_TARGET) $(LAUNCHER_TARGET)
 
-# Link source files directly into the executable
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
+# Build the game executable
+$(GAME_TARGET): $(GAME_SRC)
+	$(CXX) $(CXXFLAGS) -o $(GAME_TARGET) $(GAME_SRC)
+
+# Build the launcher executable
+$(LAUNCHER_TARGET): $(LAUNCHER_SRC)
+	$(CXX) $(CXXFLAGS) -o $(LAUNCHER_TARGET) $(LAUNCHER_SRC)
 
 # Clean up generated files
 clean:
-	rm -f $(TARGET)
+	rm -f $(GAME_TARGET) $(LAUNCHER_TARGET)
 
 # Rebuild the program
 rebuild: clean all
