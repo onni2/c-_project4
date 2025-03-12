@@ -1,24 +1,6 @@
 #include "entity_loader.h"
 #include "weapon_loader.h"
-
-
-void printFightStats(const Entity* player, const Entity* mob) {
-    std::cout << "Your character: " << player->getName() << " (Health: " << player->getHealth() << ", Strength: " << player->getStrength() << ")\n";
-    std::cout << "Mob: " << mob->getName() << " (Health: " << mob->getHealth() << ", Strength: " << mob->getStrength() << ")\n";
-}
-
-// Function to simulate a fight
-void fight(Entity* player, Entity* mob) {
-    // Example of using getter and setter for health
-    int damageToMob = player->getStrength();
-    int mobHealth = mob->getHealth();
-    
-    mobHealth -= damageToMob; // Mob takes damage
-    mob->setHealth(mobHealth); // Update mob health using setter
-
-    std::cout << mob->getName() << " takes " << damageToMob << " damage! Health left: " 
-              << mob->getHealth() << "\n";
-}
+#include "battle.h"
 
 // Function to select a character interactively
 Entity* selectCharacter(const std::vector<Entity*>& characters) {
@@ -33,44 +15,45 @@ Entity* selectCharacter(const std::vector<Entity*>& characters) {
     return characters[choice - 1];  // Access character with the selected choice
 }
 
-
-// Function to randomly pick a mob from the list
-Entity* pickRandomMob(const std::vector<Entity*>& mobs) {
-    srand(time(0)); // Seed random number generator
-    int randomIndex = rand() % mobs.size();
-    return mobs[randomIndex];
-}
 Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availableWeapons) {
-    std::string name, weaponChoice;
-    int health, strength, strengthMax, defense, defenseMax;
+    std::string name;
+    int health, strength, defense;
+    
 
     // Get character details from the user
     std::cout << "Enter character name: ";
     std::getline(std::cin, name);
-    std::cout << "Enter health: ";
-    std::cin >> health;
-    std::cout << "Enter strength: ";
+
+    health = 10 + (rand() % 41);
+
+    std::cout << "Enter strength (max 10): ";
     std::cin >> strength;
-    std::cout << "Enter max strength: ";
-    std::cin >> strengthMax;
-    std::cout << "Enter defense: ";
+    strength = std::min(strength, 10); // Ensure strength does not exceed 10
+
+    std::cout << "Enter defense (max 10): ";
     std::cin >> defense;
-    std::cout << "Enter max defense: ";
-    std::cin >> defenseMax;
-    std::cin.ignore(); // To clear out the newline character left by previous input
+    defense = std::min(defense, 10); // Ensure defense does not exceed 10
+
+    std::cin.ignore(); // Clear the newline character
+
+    // Auto-assign max stats to be equal to the entered values
+    int strengthMax = 10;
+    int defenseMax = 10;
 
     // Show available weapons
     std::cout << "\nAvailable Weapons:\n";
     int index = 1;
     for (const auto& weapon : availableWeapons) {
-        std::cout << index++ << ". " << weapon.second.name << " (Damage: " << weapon.second.damage << ", Magic: " << weapon.second.magic << ")\n";
+        std::cout << index++ << ". " << weapon.second.name 
+                  << " (Damage: " << weapon.second.damage 
+                  << ", Magic: " << weapon.second.magic << ")\n";
     }
 
     // Get weapon choice from user
     std::cout << "\nChoose a weapon by number: ";
     int weaponChoiceIndex;
     std::cin >> weaponChoiceIndex;
-    std::cin.ignore(); // To clear out the newline character left by previous input
+    std::cin.ignore(); // Clear the newline character
 
     // Find the chosen weapon by index
     auto it = availableWeapons.begin();
@@ -82,7 +65,11 @@ Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availa
 }
 
 
+
 int main() {
+
+    srand(time(nullptr));
+
     std::string weaponFile = "csv/weapons.csv";
     std::string characterFile = "csv/characters.csv";
     std::string enemyFile = "csv/enemies.csv";
@@ -95,8 +82,6 @@ int main() {
     std::vector<Entity*> allEntities;
 
     // Load characters
-    auto characters = loadEntities(characterFile, weapons);  
-    allEntities.insert(allEntities.end(), characters.begin(), characters.end());
 
     // Load enemies
     auto enemies = loadEntities(enemyFile, weapons);  
@@ -129,12 +114,19 @@ int main() {
         } else {
             std::cerr << "Error opening file: " << characterFile << std::endl;
         }
+        
     }
+    auto characters = loadEntities(characterFile, weapons);  
+    allEntities.insert(allEntities.end(), characters.begin(), characters.end());
 
     // Print all entities
-    for (Entity* entity : allEntities) {
-        printEntity(entity);  // Print details of each entity
-        delete entity;  // Free memory for each entity after printing
+    //for (Entity* entity : allEntities) {
+    //    printEntity(entity);  // Print details of each entity
+    //    delete entity;  // Free memory for each entity after printing
+    //}
+    std::cout << "\nAvailable Characters:\n";
+    for (Entity* entity : characters) {  
+        printEntity(entity);
     }
 
     // Select character
@@ -144,19 +136,13 @@ int main() {
         return 1;
     }
     do {
-        // Pick a random mob
         Entity* mob = pickRandomMob(mobs);
-
-        // Print initial stats
         printFightStats(player, mob);
-
-        // Fight the mob
         fight(player, mob);
 
-        // Ask player if they want to continue
         std::cout << "\nDo you want to continue or go home? (c for continue, h for home): ";
         std::cin >> choice;
-        std::cin.ignore(); // To clear the newline character
+        std::cin.ignore();
     } while (choice == 'c' || choice == 'C');
 
     std::cout << "Thanks for playing!\n";

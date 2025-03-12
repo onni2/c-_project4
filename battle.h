@@ -1,21 +1,15 @@
-#ifndef CHARACTER_LOADER_H
-#define CHARACTER_LOADER_H
+#ifndef BATTLE_H
+#define BATTLE_H
 
-
-
-// Structure to store character data
-struct Character {
-    std::string name;
-    std::string type;
-    int health;
-    int strength;
-    int strengthMax;
-    int defense;
-    int defenseMax;
-    Weapon weapon;
-};
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include "entity_loader.h"
 
 // Function declarations
-Character loadCharacter(const std::string& filename, const std::unordered_map<std::string, Weapon>& weapons);
+void printFightStats(const Entity* player, const Entity* mob);
+void fight(Entity* player, Entity* mob);
+Entity* pickRandomMob(const std::vector<Entity*>& mobs);
 
-#endif // CHARACTER_LOADER_H
+#endif // BATTLE_H

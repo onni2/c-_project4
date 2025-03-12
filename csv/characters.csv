@@ -2,3 +2,6 @@ Name,Type,Health,Strength,StrengthMax,Defense,DefenseMax,Weapon
 Hero,Character,100,10,20,5,10,Sword
 Villager,Character,60,5,10,2,5,Staff
 jonny,Character,10,10,20,10,20,goo
+bravo,Character,10,10,10,10,10,claws
+sins,Character,39,10,10,10,10,spear
+valur,Character,48,5,10,5,10,magic staff

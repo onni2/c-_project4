@@ -29,7 +29,7 @@ class Entity {
         void setStrength(int newStrength) { strength = newStrength; }
         void setDefense(int newDefense) { defense = newDefense; }
     
-        // Pure virtual function to print details of an entity
+        
         virtual void print() const = 0;
     
     protected:

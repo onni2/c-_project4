@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -g
 
 # Source files
-SRC = main.cpp weapon_loader.cpp character_loader.cpp
+SRC = main.cpp weapon_loader.cpp character_loader.cpp battle.cpp
 
 # Output executable
 TARGET = my_program
