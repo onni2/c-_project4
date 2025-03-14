@@ -2,24 +2,23 @@
 #include "weapons/weapon_loader.h"
 #include "battle/battle.h"
 
-// Function to select a character interactively
 Entity* selectCharacter(const std::vector<Entity*>& characters) {
-    std::vector<Entity*>::size_type choice;  // Use the correct type here for choice
+    size_t choice;
     std::cout << "Select a character (1-" << characters.size() << "): ";
     std::cin >> choice;
 
     if (choice < 1 || choice > characters.size()) {
         std::cerr << "Invalid choice.\n";
-        return nullptr;  // Or handle the error as needed
+        return nullptr;
     }
-    return characters[choice - 1];  // Access character with the selected choice
+    return characters[choice - 1];
 }
+
 
 
 Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availableWeapons) {
     std::string name;
-    int health, strength, defense;
-    
+    int health, strength, defense, startingHealth, lvl;
 
     // Get character details from the user
     std::cout << "Enter character name: ";
@@ -27,15 +26,19 @@ Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availa
 
     health = 10 + (rand() % 41);
 
-    std::cout << "Enter strength (max 10): ";
+    std::cout << "Enter strength (recomended around 10): ";
     std::cin >> strength;
-    strength = std::min(strength, 10); // Ensure strength does not exceed 10
+    
 
-    std::cout << "Enter defense (max 10): ";
+    std::cout << "Enter defense (recomended around 10): ";
     std::cin >> defense;
-    defense = std::min(defense, 10); // Ensure defense does not exceed 10
+   
 
     std::cin.ignore(); // Clear the newline character
+
+    // Starting health and level
+    startingHealth = health;
+    lvl = 1; // Initialize level to 1 for new characters
 
     // Auto-assign max stats to be equal to the entered values
     int strengthMax = 10;
@@ -62,8 +65,9 @@ Entity* createNewCharacter(const std::unordered_map<std::string, Weapon>& availa
     Weapon selectedWeapon = it->second;
 
     // Create the new Character
-    return new Character(name, health, strength, strengthMax, defense, defenseMax, selectedWeapon);
+    return new Character(name, health, strength, strengthMax, defense, defenseMax, selectedWeapon, startingHealth, lvl);
 }
+
 
 void displayCharacters(const std::vector<Entity*>& allEntities) {
     std::cout << "############################################\n"
@@ -80,7 +84,7 @@ void displayCharacters(const std::vector<Entity*>& allEntities) {
     }
 
     std::cout << "\n############################################\n"
-              << "             Select a character (1-" << index - 1 << "): \n"
+              << "             Select a character (1-" << index-1 << "): \n"
               << "############################################\n";
 }
 
@@ -90,7 +94,7 @@ int main() {
     
     std::string weaponFile = "csv/weapons.csv";
     std::string characterFile = "csv/characters.csv";
-    std::string enemyFile = "csv/enemies.csv";
+    //std::string enemyFile = "csv/enemies.csv";
     std::string mobFile = "csv/mobs.csv";
 
     // Load weapons
@@ -102,13 +106,12 @@ int main() {
     // Load characters
 
     // Load enemies
-    auto enemies = loadEntities(enemyFile, weapons);  
-    allEntities.insert(allEntities.end(), enemies.begin(), enemies.end());
+    //auto enemies = loadEntities(enemyFile, weapons);  
+    //allEntities.insert(allEntities.end(), enemies.begin(), enemies.end());
 
     // Load mobs
     auto mobs = loadEntities(mobFile, weapons);  
     allEntities.insert(allEntities.end(), mobs.begin(), mobs.end());
-
     // Create a new Character interactively
     char choice;  // Change to char to store character input
     std::cout << "Do you want to create a new Character? (y/n): ";
@@ -116,7 +119,6 @@ int main() {
     std::cin.ignore(); // To clear out the newline character
     if (choice == 'y' || choice == 'Y') {
         Entity* newCharacter = createNewCharacter(weapons);  // Create new Character interactively
-        allEntities.push_back(newCharacter);  // Add to the list of all entities
 
         // Save the new character to the characters.csv file
         std::ofstream outFile(characterFile, std::ios::app);  // Open in append mode
@@ -127,16 +129,21 @@ int main() {
                     << newCharacter->getStrengthMax() << ","
                     << newCharacter->getDefense() << ","
                     << newCharacter->getDefenseMax() << ","
-                    << newCharacter->getWeapon().name << "\n";
+                    << newCharacter->getWeapon().name << ",";
+            // Check if this entity is a Character
+            Character* charPtr = dynamic_cast<Character*>(newCharacter);
+            if (charPtr) {
+                outFile  << charPtr->getStartingHealth() << "," << charPtr->getLvl() << "\n";
+            }
             std::cout << "New character added to " << characterFile << std::endl;
         } else {
             std::cerr << "Error opening file: " << characterFile << std::endl;
         }
         
     }
+   
     auto characters = loadEntities(characterFile, weapons);  
     allEntities.insert(allEntities.end(), characters.begin(), characters.end());
-
     // Print all entities
     //for (Entity* entity : allEntities) {
     //    printEntity(entity);  // Print details of each entity

@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -g
 
 # Source files for the game and launcher
-GAME_SRC = game.cpp weapons/weapon_loader.cpp entity/character_loader.cpp battle/battle.cpp
+GAME_SRC = game.cpp weapons/weapon_loader.cpp entity/character_loader.cpp battle/battle.cpp lvl_up/lvl_up.cpp
 LAUNCHER_SRC = launcher.cpp
 
 # Output executables

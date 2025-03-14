@@ -3,6 +3,7 @@
 
 #include "../extra/includes.h"
 #include "../entity/entity_loader.h"
+#include "../lvl_up/lvl_up.h"
 
 // Function declarations
 bool attackHits(int defenderDefense);

@@ -122,7 +122,8 @@ void mobTurn(Entity* mob, Entity* player) {
 
 
 void fight(Entity* player, Entity* mob) {
-    player->getWeapon().magic;
+    static int mobsDefeated = 0;  // Static variable to track defeated mobs
+
     std::cout << LINE_BREAK;
     std::cout << BLUE << "A fight begins between " << player->getName() << " and " << mob->getName() << "!" << RESET_COLOR << "\n";
     std::cout << LINE_BREAK;
@@ -133,6 +134,7 @@ void fight(Entity* player, Entity* mob) {
         
         if (mob->getHealth() <= 0) {
             std::cout << GREEN << mob->getName() << " has been defeated!" << RESET_COLOR << "\n";
+            mobsDefeated++;  // Increment defeated mob count
             break;
         }
 
@@ -151,7 +153,17 @@ void fight(Entity* player, Entity* mob) {
         std::cout << "---- Next round ----\n";
         std::cout << LINE_BREAK;
     }
+    if (mobsDefeated > 2) {
+    Character* character = dynamic_cast<Character*>(player);
+        if (character) {
+            levelUp(character);  // Safely call levelUp if the cast was successful
+        } else {
+            std::cerr << "Error: Player is not a Character, cannot level up.\n";
+        }
+        mobsDefeated = 0;
+    }
 }
+
 
 Entity* pickRandomMob(const std::vector<Entity*>& mobs) {
     srand(time(0));
@@ -171,7 +183,7 @@ Entity* pickRandomMob(const std::vector<Entity*>& mobs) {
             }
         }
     }
-
+ 
     // If there are alive mobs other than Orc and Dragon, pick one of them
     if (!aliveMobs.empty()) {
         int randomIndex = rand() % aliveMobs.size();

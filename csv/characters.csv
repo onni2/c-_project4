@@ -1,8 +1,8 @@
-Name,Type,Health,Strength,StrengthMax,Defense,DefenseMax,Weapon
-Hero,Character,100,100,20,5,10,Sword
-Villager,Character,60,5,10,2,5,Staff
-jonny,Character,10,10,20,10,20,goo
-bravo,Character,10,10,10,10,10,claws
-sins,Character,39,10,10,10,10,spear
-valur,Character,48,5,10,5,10,magic staff
-sjensinn,Character,36,9,10,3,10,magic staff
+Name,Type,Health,Strength,StrengthMax,Defense,DefenseMax,Weapon,StartingHealth,Lvl
+Hero,Character,91,116,20,5,10,sword,100,6
+Villager,Character,60,5,10,2,5,Staff,60,1
+jonny,Character,10,10,20,10,20,goo,10,1
+bravo,Character,10,10,10,10,10,claws,10,1
+sins,Character,39,10,10,10,10,spear,39,1
+valur,Character,48,5,10,5,10,magic staff,48,1
+cheesepuff,Character,45,11,10,1,10,lightning bow,45,1

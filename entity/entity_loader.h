@@ -39,44 +39,36 @@ protected:
 };
 
 // Derived class for Character
-// Derived class for Character
 class Character : public Entity {
     public:
         // Constructor for Character
         Character(std::string name, int health, int strength, int strengthMax, int defense, 
-                  int defenseMax, Weapon weapon)
-            : Entity(std::move(name), "Character", health, strength, strengthMax, defense, defenseMax, weapon) {}
+                  int defenseMax, Weapon weapon, int startingHealth, int lvl)
+            : Entity(std::move(name), "Character", health, strength, strengthMax, defense, defenseMax, weapon),
+              startingHealth(startingHealth), lvl(lvl) {}
+    
+        // Getter for starting health and level
+        int getStartingHealth() const { return startingHealth; }
+        int getLvl() const { return lvl; }
+    
+        // Setter for level
+        void setLvl(int newLvl) { lvl = newLvl; }
     
         // Implement the pure virtual print function
         void print() const override {
             std::cout << "\nCharacter Name: " << name << " (" << type << ")\n"
-                      << "Health: " << health << "\n"
+                      << "Health: " << health << "/" << startingHealth << "\n"
                       << "Strength: " << strength << "/" << strengthMax << "\n"
                       << "Defense: " << defense << "/" << defenseMax << "\n"
                       << "Weapon: " << weapon.name << " (Damage: " << weapon.damage 
                       << ", Magic: " << weapon.magic << ")\n"
+                      << "Level: " << lvl << "\n"
                       << "----------------------------------------\n";
         }
-    };
     
-    // Derived class for Enemy
-    class Enemy : public Entity {
-    public:
-        // Constructor for Enemy
-        Enemy(std::string name, int health, int strength, int strengthMax, int defense, 
-              int defenseMax, Weapon weapon)
-            : Entity(std::move(name), "Enemy", health, strength, strengthMax, defense, defenseMax, weapon) {}
-    
-        // Implement the pure virtual print function
-        void print() const override {
-            std::cout << "\nEnemy Name: " << name << " (" << type << ")\n"
-                      << "Health: " << health << "\n"
-                      << "Strength: " << strength << "/" << strengthMax << "\n"
-                      << "Defense: " << defense << "/" << defenseMax << "\n"
-                      << "Weapon: " << weapon.name << " (Damage: " << weapon.damage 
-                      << ", Magic: " << weapon.magic << ")\n"
-                      << "----------------------------------------\n";
-        }
+    private:
+        int startingHealth;  // Store the initial health value
+        int lvl;  // Store the level of the character
     };
     
     // Derived class for Mob
@@ -103,5 +95,6 @@ class Character : public Entity {
 // Function declarations
 std::vector<Entity*> loadEntities(const std::string& filename, const std::unordered_map<std::string, Weapon>& weapons);
 void printEntity(const Entity* entity);
+std::string toLowerCase(const std::string& str);
 
 #endif // ENTITY_LOADER_H
