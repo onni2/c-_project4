@@ -1,9 +1,11 @@
 weapon,damage,magic
-sword,10,null
-fire sword,10,fire
-axe,15,null
-magic staff,5,arcane
-staff,3,arcane
-spear,12,null
+sword,12,null
+fire sword,12,fire
+axe,18,null
+magic staff,6,thunder
+staff,4,null
+spear,14,null
 goo,1,poison
 claws,7,null
+ice dagger,8,ice
+lightning bow,10,lightning
